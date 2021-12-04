@@ -57,7 +57,7 @@ def binary_list_to_int(l: list) -> int:
     return int(''.join(l), base=2)
 
 '''
-returns string representation of binary
+returns string representation of binary as list
 '''
 def get_rating(data: list, gas: Gas, pos: int) -> list:
     if (len(data) == 1):
