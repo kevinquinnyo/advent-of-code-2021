@@ -10,9 +10,6 @@ import sys
 #    To find CO2 scrubber rating, determine the least common value (0 or 1) in the current bit position, and keep only numbers with that bit in that position. If 0 and 1 are equally common, keep values with a 0 in the position being considered.
 #
 
-BIT_LENGTH = 5
-result = [0] * BIT_LENGTH
-
 # cache the data in case we call it more than once?
 class DataFetcher:
     items = []
