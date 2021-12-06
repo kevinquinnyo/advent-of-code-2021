@@ -1,7 +1,4 @@
 #!/usr/bin/python3
-from pprint import pprint
-from collections import defaultdict
-import sys
 
 # we can maybe calculate the rate of change based on the answer already provided for the test data
 # for puzzle 2 but we can also just do this with less space complexity using a stack:
@@ -30,5 +27,5 @@ def answer(days: int, inp: list) -> int:
 
     return sum(timers)
 
-pprint(answer(80, inp))
-pprint(answer(256, inp))
+print(answer(80, inp))
+print(answer(256, inp))
