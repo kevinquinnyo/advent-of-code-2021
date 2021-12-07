@@ -1,8 +1,4 @@
 #!/usr/bin/python3
-from pprint import pprint
-from collections import defaultdict
-from statistics import median
-import sys
 
 with open('data.txt') as file:
     for row in file:
@@ -25,7 +21,7 @@ for guess in range(min(positions), max(positions)):
     if cost < lowest:
         lowest = cost
 
-pprint(lowest)
+print(lowest)
 
 # part 2
 lowest = 999999999999999999999
@@ -36,4 +32,4 @@ for guess in range(min(positions), max(positions)):
     if cost < lowest:
         lowest = cost
 
-pprint(lowest)
+print(lowest)
