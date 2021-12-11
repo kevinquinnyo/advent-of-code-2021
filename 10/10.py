@@ -42,14 +42,6 @@ AC_SCORE_MAP = {
     ">": 4,
 }
 
-# return the word reversed with the companion bracket instead to "complete" an incomplete word
-def revWord(word):
-    rev = ''
-    for c in word[::-1]:
-        rev += FULL_MAP[c]
-
-    return rev
-
 def isIncomplete(word):
     is_valid, _ = isValid(word + getAutoCorrect(word))
 
