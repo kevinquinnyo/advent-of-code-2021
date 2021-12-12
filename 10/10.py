@@ -54,59 +54,67 @@ def isCorrupt(word):
         return False
 
     return not isIncomplete(word)
+"""
+this stack appends until if finds open/close pairs. When it finds one, instead of appending to the
+stack, it pops it off, so that eventually it will only have open/close pairs. The initialization
+of the stack with the '#' is just to prevent an additional check if the stack is empty for the
+last char in a valid word
 
-# this stack appends until if finds open/close pairs. When it finds one, instead of appending to the
-# stack, it pops it off, so that eventually it will only have open/close pairs. The initialization
-# of the stack with the '#' is just to prevent an additional check if the stack is empty for the
-# last char in a valid word
+example: {()[]}
+i={, stack=#{
+i=(, stack=#{(
+i=), stack=#{, pop=(
+i=[, stack=#{[
+i=], stack=#{, pop=]
+i=}, stack=#, pop=}
+len(stack) == 1 (True, stack is just #)
 
-# example: {()[]}
-# i={, stack=#{
-# i=(, stack=#{(
-# i=), stack=#{, pop=(
-# i=[, stack=#{[
-# i=], stack=#{, pop=]
-# i=}, stack=#, pop=}
-# len(stack) == 1 (True, stack is just #)
+for the "autocomplete", we can just reverse the rest of the stack at the point of failure to
+"complete" the incomplete code.
+example:
 
-# returning a tuple here so we can also return the last incorrect character
-def isValid(word) -> tuple:
-    stack = ['#']
+<{([{{}}[<[[[<>{}]]]>[]]
+<{([{{}}[<[[[<>{}]]]>[]]])}>
+"""
+class CodeValidator:
+    def __init__(self, code: str):
+        self.code = code
+        self.autocomplete = ''
+        self.is_valid = False
+        self.last_wrong_char = None
+        self.validate()
 
-    for i in word:
-        if i in MAP.keys():
-            if stack.pop() != MAP[i]:
-                return (False, i)
-        else:
-            stack.append(i)
+    def validate(self):
+        stack = ['#']
 
-    return (len(stack) == 1, i)
+        for i in self.code:
+            if i in MAP.keys():
+                if stack.pop() != MAP[i]:
+                    self.last_wrong_char = i
+                    break
+            else:
+                stack.append(i)
 
-# <{([{{}}[<[[[<>{}]]]>[]]
-# <{([{{}}[<[[[<>{}]]]>[]]])}>
+        stack.remove('#')
 
-# this is similar to isValid, but we are completing the word, so whatever remains on the stack at
-# the end of a presumably incomplete word can be reversed/inverted to close everything up
-def getAutoCorrect(word) -> tuple:
-    stack = ['#']
+        if not stack:
+            self.is_valid = True
+            return
 
-    for i in word:
-        if i in MAP.keys():
-            if stack.pop() != MAP[i]:
-                break
-        else:
-            stack.append(i)
+        # trick to read string in reverse
+        for c in stack[::-1]:
+            self.autocomplete += FULL_MAP[c]
 
-    stack.remove('#')
-    autocomplete = ''
+    def isIncomplete(self) -> bool:
+        word = CodeValidator(self.code + self.autocomplete)
 
-    # trick to read string in reverse
-    for c in stack[::-1]:
-        autocomplete += FULL_MAP[c]
+        return word.is_valid
 
-    return autocomplete
+    def isCorrupt(self) -> bool:
+        return not self.is_valid and not self.isIncomplete()
 
-assert '])}>' == getAutoCorrect('<{([{{}}[<[[[<>{}]]]>[]]')
+v = CodeValidator('<{([{{}}[<[[[<>{}]]]>[]]')
+assert '])}>' == v.autocomplete
 
 def calculateAcScore(autocomplete):
     score = 0
@@ -121,14 +129,13 @@ assert calculateAcScore('}}]])})]') == 288957
 syntax_score = 0
 autocompletes = []
 for line in lines:
-    if isIncomplete(line):
-        autocompletes.append(getAutoCorrect(line))
+    validator = CodeValidator(line)
+    if validator.isIncomplete():
+        autocompletes.append(validator.autocomplete)
         continue
 
-    if isCorrupt(line):
-        is_valid, last_char = isValid(line)
-        assert is_valid == False
-        syntax_score += SYNTAX_SCORE_MAP[last_char]
+    if validator.isCorrupt():
+        syntax_score += SYNTAX_SCORE_MAP[validator.last_wrong_char]
 
 # part 1:
 pprint(syntax_score)
