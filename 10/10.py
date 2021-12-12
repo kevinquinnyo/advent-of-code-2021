@@ -57,12 +57,21 @@ i=], stack=#{, pop=]
 i=}, stack=#, pop=}
 len(stack) == 1 (True, stack is just #)
 
+If we only wanted to check for validity, we would simply: `return len(stack) == 1`.
+Instead, we set the `last_wrong_char` for use in "completing" a code that is technically invalid but
+actually just incomplete. To check for that incompleteness, we remove the '#', then handle the
+incompleteness check. See below.
+
 for the "autocomplete", we can just reverse the rest of the stack at the point of failure to
 "complete" the incomplete code.
 example:
 
-<{([{{}}[<[[[<>{}]]]>[]]
-<{([{{}}[<[[[<>{}]]]>[]]])}>
+if code  = <{([{{}}[<[[[<>{}]]]>[]]
+complete = <{([{{}}[<[[[<>{}]]]>[]]])}>
+
+see: assert '])}>' == v.autocomplete
+
+
 """
 class CodeValidator:
     def __init__(self, code: str):
