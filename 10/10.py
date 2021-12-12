@@ -42,18 +42,6 @@ AC_SCORE_MAP = {
     ">": 4,
 }
 
-def isIncomplete(word):
-    is_valid, _ = isValid(word + getAutoCorrect(word))
-
-    return is_valid
-
-def isCorrupt(word):
-    is_valid, _ = isValid(word)
-
-    if is_valid:
-        return False
-
-    return not isIncomplete(word)
 """
 this stack appends until if finds open/close pairs. When it finds one, instead of appending to the
 stack, it pops it off, so that eventually it will only have open/close pairs. The initialization
