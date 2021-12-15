@@ -5,8 +5,8 @@ from collections import defaultdict
 # we create an adjacency list. this is an undirected graph so we add child->parent and vice versa
 adj = defaultdict(set)
 
-with open('test.txt') as file:
-#with open('data.txt') as file:
+#with open('test.txt') as file:
+with open('data.txt') as file:
     for line in file:
         parent, child = line.rstrip().split('-')
         adj[parent].add(child)
@@ -35,5 +35,32 @@ dfs('start', [])
 pprint(len(paths))
 
 # part 2
-# TODO probably create a function that checks if a lower (not start or end) already exists?
+paths = []
 
+def lowerQuotaReached(path: list) -> int:
+    lowers = [x for x in path if x.islower()]
+    for x in lowers:
+        if lowers.count(x) > 1:
+            return True
+    return False
+
+def dfs2(node: str, path: list):
+    path.append(node)
+
+    if node == 'end':
+        paths.append(path)
+        return
+
+    for child in adj[node]:
+        if child.islower() and child in path:
+            if child in ['start', 'end']:
+                continue
+            if lowerQuotaReached(path):
+                continue
+
+        # we must create a new list here or else we are mutating path in paths directly
+        dfs2(child, list(path))
+dfs2('start', [])
+
+# part 2
+pprint(len(paths))
